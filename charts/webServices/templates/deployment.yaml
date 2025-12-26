@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
+  namespace: {{ .Values.namespace | default "default" }}
+  labels:
+    app: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
+    environment: {{ .Values.environment | lower }}
+    webservice: {{ .Values.services.webService.name | lower }}
+    app.kubernetes.io/name: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
+      environment: {{ .Values.environment | lower }}
+      webservice: {{ .Values.services.webService.name | lower }}
+      app.kubernetes.io/name: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
+        environment: {{ .Values.environment | lower }}
+        webservice: {{ .Values.services.webService.name | lower }}
+        app.kubernetes.io/name: {{ .Release.Name }}
+    spec:
+      {{- if .Values.services.webService.serviceAccountName }}
+      serviceAccountName: {{ .Values.services.webService.serviceAccountName }}
+      {{- end }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          image: {{ .Values.services.webService.image.url }}
+          imagePullPolicy: IfNotPresent
+          {{- with .Values.envs }}
+          env:
+            {{- range . }}
+            - name: {{ .name | quote }}
+              value: {{ .value | quote }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.secrets.enabled }}
+          envFrom:
+          - secretRef:
+              {{- if .Values.services.webService.secretName }}
+              name: {{ .Values.services.webService.secretName }}
+              {{- else }}
+              name: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
+              {{- end }}
+          {{- end }}
+          ports:
+            - containerPort: {{ .Values.services.targetPort }}
+              name: http
+              protocol: TCP
+          resources:
+            requests:
+              memory: {{ .Values.resources.requests.memory }}
+              cpu: {{ .Values.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.resources.limits.memory }}
+              cpu: {{ .Values.resources.limits.cpu }}
+      {{- if .Values.services.tolerations }}
+      tolerations:
+        {{- range .Values.services.tolerations }}
+        - key: {{ .key }}
+          operator: {{ .operator }}
+          effect: {{ .effect }}
+          {{- if .value }}
+          value: {{ .value }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+      {{ if .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

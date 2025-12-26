@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
+  namespace: {{ .Values.namespace | default "default" }}
+  labels:
+    app: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
+    environment: {{ .Values.environment | lower }}
+    webservice: {{ .Values.services.webService.name | lower }}
+    app.kubernetes.io/name: {{ .Release.Name }}
+spec:
+  type: {{ .Values.services.webService.type | default "ClusterIP" }}
+  ports:
+    - port: {{ .Values.services.targetPort }}
+      targetPort: {{ .Values.services.targetPort }}
+      protocol: TCP
+  selector:
+    app: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
+    environment: {{ .Values.environment | lower }}
+    webservice: {{ .Values.services.webService.name | lower }}
+    app.kubernetes.io/name: {{ .Release.Name }}
+
+
+{{- if .Values.services.webService.external }}
+# Ingress Route
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
+  namespace: {{ .Values.namespace | default "default" }}
+  labels:
+    app: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
+    environment: {{ .Values.environment | lower }}
+    webservice: {{ .Values.services.webService.name | lower }}
+    app.kubernetes.io/name: {{ .Release.Name }}
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}.{{ .Values.domain }}`)
+      services:
+        - kind: Service
+          name: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
+          port: {{ .Values.services.targetPort }}
+{{- end }}

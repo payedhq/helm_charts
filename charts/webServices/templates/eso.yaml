@@ -1,0 +1,49 @@
+{{- if .Values.secrets.enabled }}
+# Cluster Secret Store
+apiVersion: external-secrets.io/v1
+kind: ClusterSecretStore
+metadata:
+  name: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
+spec:
+  provider:
+    infisical:
+      hostAPI: http://{{ .Values.environment | lower }}-infisical.infisical.svc.cluster.local:8080/api
+      auth:
+        universalAuthCredentials:
+          clientId:
+            name: universal-infisical-credentials
+            namespace: infisical
+            key: CLIENT_ID
+          clientSecret:
+            name: universal-infisical-credentials
+            namespace: infisical
+            key: CLIENT_SECRET
+      secretsScope:
+        projectSlug: {{ .Values.environment | lower }}-{{ .Values.project.name }}
+        environmentSlug: {{ .Values.environment | lower }}
+        secretsPath: /{{ .Values.services.webService.name | lower }}
+        recursive: true
+        expandSecretReferences: false
+
+---
+# External Secret
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
+  namespace: {{ .Values.namespace | default "default" }}
+spec:
+  secretStoreRef:
+    name: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
+    kind: ClusterSecretStore
+  refreshInterval: 1m
+  target:
+    name: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
+    creationPolicy: Owner
+    template:
+      type: Opaque
+  dataFrom:
+    - find:
+        name:
+          regexp: ".*"
+{{- end }}
