@@ -1,0 +1,1 @@
+# GetPayed Custom Helm Charts
