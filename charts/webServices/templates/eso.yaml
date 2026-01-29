@@ -37,7 +37,6 @@ spec:
   secretStoreRef:
     name: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
     kind: SecretStore
-    namespace: {{ .Values.namespace | default "default" }}
   refreshInterval: 1m
   target:
     name: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
