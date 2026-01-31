@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
-  namespace: {{ .Values.namespace | default "default" }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
     environment: {{ .Values.environment | lower }}

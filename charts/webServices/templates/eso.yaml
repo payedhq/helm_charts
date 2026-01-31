@@ -4,7 +4,7 @@ apiVersion: external-secrets.io/v1
 kind: SecretStore
 metadata:
   name: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
-  namespace: {{ .Values.namespace | default "default" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   provider:
     infisical:
@@ -32,7 +32,7 @@ apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
-  namespace: {{ .Values.namespace | default "default" }}
+  namespace: {{ .Release.Namespace }}
 spec:
   secretStoreRef:
     name: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
