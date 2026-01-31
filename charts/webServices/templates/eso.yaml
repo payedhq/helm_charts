@@ -1,3 +1,6 @@
+# NOTE: this will be converted to a namespace secret store in the future after the error below is fixed:
+#failed to create resource: admission webhook "validate.secretstore.external-secrets.io" denied the request: namespace should either be empty or match the namespace of the SecretStore for a namespaced SecretStore
+
 {{- if .Values.secrets.enabled }}
 # Cluster Secret Store
 apiVersion: external-secrets.io/v1
