@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   getpayed-helm-charts:
   - apiVersion: v2
+    appVersion: 1.23.0
+    created: "2026-01-31T09:27:43.486607852Z"
+    description: A Helm chart for Kubernetes
+    digest: 4b4983ba1f48190f5639590747d0118c746f046a6e06d28d5138193817ffc5b8
+    name: getpayed-helm-charts
+    type: application
+    urls:
+    - https://github.com/payedhq/helm_charts/releases/download/getpayed-helm-charts-0.13.0/getpayed-helm-charts-0.13.0.tgz
+    version: 0.13.0
+  - apiVersion: v2
     appVersion: 1.22.0
     created: "2026-01-31T07:18:37.902816107Z"
     description: A Helm chart for Kubernetes
@@ -101,4 +111,4 @@ entries:
     urls:
     - https://github.com/payedhq/helm_charts/releases/download/getpayed-helm-charts-0.2.0/getpayed-helm-charts-0.2.0.tgz
     version: 0.2.0
-generated: "2026-01-31T07:18:37.902870217Z"
+generated: "2026-01-31T09:27:43.486651562Z"
