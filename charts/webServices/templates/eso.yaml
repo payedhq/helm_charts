@@ -10,7 +10,7 @@ metadata:
 spec:
   provider:
     infisical:
-      hostAPI: http://{{ .Values.environment | lower }}-infisical.infisical.svc.cluster.local:8080/api
+      hostAPI: http://infisical.infisical.svc.cluster.local:8080/api
       auth:
         universalAuthCredentials:
           clientId:
