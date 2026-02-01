@@ -24,7 +24,11 @@ spec:
       secretsScope:
         projectSlug: {{ .Values.environment | lower }}-{{ .Values.project.name | lower }}
         environmentSlug: {{ .Values.environment | lower }}
+        {{- if .Values.secrets.secretStorePath }}
+        secretsPath: /{{ .Values.secrets.secretStorePath | lower }}
+        {{- else }}
         secretsPath: /{{ .Values.services.webService.name | lower }}
+        {{- end }}
         recursive: true
         expandSecretReferences: false
 

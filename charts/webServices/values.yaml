@@ -143,6 +143,8 @@ affinity: {}
 
 secrets:
   enabled: true
+  # Custom Infisical folder path (optional). If not set, uses services.webService.name.
+  # secretStorePath: "my-custom-folder"
 
 project:
   name: "GetPayed"
