@@ -1,3 +1,4 @@
+{{- if .Values.services.webService.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -44,4 +45,5 @@ spec:
         - kind: Service
           name: {{ .Values.environment | lower }}-{{ .Values.services.webService.name | lower }}
           port: {{ .Values.services.targetPort }}
+{{- end }}
 {{- end }}
